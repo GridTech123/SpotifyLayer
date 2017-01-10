@@ -44,6 +44,9 @@ try:
     pause = pygame.image.load('pause.png')
     unpause = pygame.image.load('unpause.png')
     back = pygame.image.load('back.png')
+    settings = pygame.image.load('settings.png')
+    check = pygame.image.load('check.png')
+    cross = pygame.image.load('cross.png')
     os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
@@ -52,7 +55,8 @@ except:
 clock = pygame.time.Clock()
 
 #vars
-rendermode = 0
+settingsMenu = False
+fullscreen = False
 
 #pygame start
 try:
@@ -136,6 +140,11 @@ while True:
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             spotilib.previous()
 
+    screen.blit(settings, (sx - 480, sy - 110))
+    if mx > sx - 480 and mx < sx - 480 + 90 and my > sy - 110 and my < sy - 110 + 90:
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:
+            settingsMenu = True
+
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_RIGHT:   
             spotilib.next()
@@ -151,5 +160,39 @@ while True:
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_UP:   
             spotilib.play()
+
+    if settingsMenu == True:
+        pygame.draw.rect(screen, blue2, [0,0,sx,sy])
+        screen.blit(back, (10, 10))
+        if mx > 10 and mx < 10 + 90 and my > 10 and my < 10 + 90:
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                settingsMenu = False
+        screen.blit(menu_font.render('Fullscreen: ', True, black),(100, 100))
+        if fullscreen == False:
+            screen.blit(cross, (300, 70))
+            if mx > 300 and mx < 300 + 90 and my > 70 and my < 70 + 90:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:            
+                    fullscreen = True
+                    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ( GetSystemMetrics(0) / 4, 1)
+                    pygame.init()
+                    wsx = GetSystemMetrics(0)
+                    wsy = GetSystemMetrics(1)
+                    sx = wsx
+                    sy = wsy
+                    mode = FULLSCREEN
+                    screen = pygame.display.set_mode([sx,sy], mode)
+        elif fullscreen == True:
+            screen.blit(check, (300, 70))
+            if mx > 300 and mx < 300 + 90 and my > 70 and my < 70 + 90:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:            
+                    fullscreen = False
+                    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ( GetSystemMetrics(0) / 4, 1)
+                    pygame.init()
+                    wsx = GetSystemMetrics(0)
+                    wsy = GetSystemMetrics(1)
+                    sx = wsx - 100
+                    sy = wsy - 100
+                    mode = RESIZABLE
+                    screen = pygame.display.set_mode([sx,sy], mode)
 
     display.update()
