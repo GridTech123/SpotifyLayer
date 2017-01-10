@@ -115,7 +115,7 @@ while True:
     screen.blit(big_font.render(spotilib.song(), True, black),(400, 10))
     screen.blit(menu_font.render(spotilib.artist(), True, black),(400, 110))
 
-    if spotilib.song() == 'There is nothing playing at this moment':
+    if spotilib.song() == 'There is noting playing at this moment':
         screen.blit(unpause, ((sx / 2) - (90 / 2), 160))
         if mx > (sx / 2) - (90 / 2) and mx < (sx / 2) - (90 / 2) + 90 and my > 160 and my < 160 + 90:
             if event.type == MOUSEBUTTONDOWN and event.button == 1:
