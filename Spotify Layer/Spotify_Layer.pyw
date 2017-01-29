@@ -47,6 +47,7 @@ try:
     settings = pygame.image.load('settings.png')
     check = pygame.image.load('check.png')
     cross = pygame.image.load('cross.png')
+    logo = pygame.image.load('logo.png')
     os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
@@ -85,7 +86,7 @@ big_font = pygame.font.SysFont('Calibri', 80)
 title_font = pygame.font.SysFont('Calibri', 100)
 
 #window settings
-#pygame.display.set_icon(logo)
+pygame.display.set_icon(logo)
 pygame.display.set_caption("Spotify Layer")
 
 #first time

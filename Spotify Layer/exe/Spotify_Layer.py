@@ -39,7 +39,6 @@ gray3 = (140, 138, 139)
 
 #images
 try:
-    os.chdir('images')
     background = pygame.image.load('background.png')
     pause = pygame.image.load('pause.png')
     unpause = pygame.image.load('unpause.png')
@@ -47,7 +46,7 @@ try:
     settings = pygame.image.load('settings.png')
     check = pygame.image.load('check.png')
     cross = pygame.image.load('cross.png')
-    os.chdir('..')
+    logo = pygame.image.load('logo.png')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
 
@@ -85,7 +84,7 @@ big_font = pygame.font.SysFont('Calibri', 80)
 title_font = pygame.font.SysFont('Calibri', 100)
 
 #window settings
-#pygame.display.set_icon(logo)
+pygame.display.set_icon(logo)
 pygame.display.set_caption("Spotify Layer")
 
 #first time

@@ -8,4 +8,5 @@ cx_Freeze.setup(name = 'Spotify Layer', version = '1.2.0', options = {'build_exe
                                                                                                                                                                                               'cross.png',
                                                                                                                                                                                               'pause.png',
                                                                                                                                                                                               'settings.png',
-                                                                                                                                                                                              'unpause.png']}}, executables = executables)
+                                                                                                                                                                                              'unpause.png',
+                                                                                                                                                                                              'logo.png']}}, executables = executables)
