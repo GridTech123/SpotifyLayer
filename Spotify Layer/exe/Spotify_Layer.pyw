@@ -39,6 +39,7 @@ gray3 = (140, 138, 139)
 
 #images
 try:
+    os.chdir('images')
     background = pygame.image.load('background.png')
     pause = pygame.image.load('pause.png')
     unpause = pygame.image.load('unpause.png')
@@ -47,6 +48,7 @@ try:
     check = pygame.image.load('check.png')
     cross = pygame.image.load('cross.png')
     logo = pygame.image.load('logo.png')
+    os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
 

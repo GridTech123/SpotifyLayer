@@ -41,6 +41,7 @@ gray3 = (140, 138, 139)
 try:
     os.chdir('images')
     background = pygame.image.load('background.png')
+    background2 = pygame.image.load('background2.png')
     pause = pygame.image.load('pause.png')
     unpause = pygame.image.load('unpause.png')
     back = pygame.image.load('back.png')
@@ -48,6 +49,8 @@ try:
     check = pygame.image.load('check.png')
     cross = pygame.image.load('cross.png')
     logo = pygame.image.load('logo.png')
+    menuBack = pygame.image.load('menuBack.png')
+    samllWindow = pygame.image.load('smallWindow.png')
     os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
@@ -58,6 +61,8 @@ clock = pygame.time.Clock()
 #vars
 settingsMenu = False
 fullscreen = False
+songDisplay = ''
+artistDisplay = ''
 
 #pygame start
 try:
@@ -99,6 +104,8 @@ except:
     pickle_out.close()
     rendermode = 'firstStart'
 
+x1 = 0
+x2 = sx - sx - sx
 #program
 while True:
     for event in pygame.event.get():
@@ -108,17 +115,46 @@ while True:
         elif event.type==VIDEORESIZE:
             screen=pygame.display.set_mode(event.dict['size'], mode)
             sx, sy = screen.get_size()
+            x1 = 0
+            x2 = sx - sx - sx
 
     #settings
     screen.fill(gray)
     clock.tick(200)
     mx, my = pygame.mouse.get_pos()
 
-    background = pygame.transform.scale(background, (sx, sy))
-    screen.blit(background, (0,0))
+    background = pygame.transform.scale(background, (sx + 10, sy))
+    background2 = pygame.transform.scale(background2, (sx + 10, sy))
+    menuBack = pygame.transform.scale(menuBack, (sx, sy))
+    screen.blit(background, (x1, 0))
+    screen.blit(background2, (x2, 0))
 
-    screen.blit(big_font.render(spotilib.song(), True, black),(400, 10))
-    screen.blit(menu_font.render(spotilib.artist(), True, black),(400, 110))
+    if x1 < sx:
+        x1 = x1 + 4
+    else:
+        x1 = sx - sx - sx
+
+    if x2 < sx:
+        x2 = x2 + 4
+    else:
+        x2 = sx - sx - sx
+
+    try:
+        if spotilib.song() != 'There is noting playing at this moment':
+            songDisplay = spotilib.song()
+        else:
+            songDisplay = ''
+
+        if spotilib.artist() != 'There is noting playing at this moment':
+            artistDisplay = spotilib.artist()
+        else:
+            artistDisplay = ''
+    except:
+        songDisplay = ":'("
+        artistDisplay = 'An error occured'            
+
+    screen.blit(big_font.render(songDisplay, True, black),(400, 10))
+    screen.blit(menu_font.render(artistDisplay, True, black),(400, 110))
 
     if spotilib.song() == 'There is noting playing at this moment':
         screen.blit(unpause, ((sx / 2) - (90 / 2), 160))
@@ -141,10 +177,19 @@ while True:
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             spotilib.previous()
 
-    screen.blit(settings, (sx - 480, sy - 110))
-    if mx > sx - 480 and mx < sx - 480 + 90 and my > sy - 110 and my < sy - 110 + 90:
+    screen.blit(settings, (sx - 200, sy - 110))
+    if mx > sx - 200 and mx < sx - 200 + 80 and my > sy - 110 and my < sy - 110 + 80:
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             settingsMenu = True
+
+    screen.blit(samllWindow, (sx - 100, sy - 110))
+    if mx > sx - 100 and mx < sx - 100 + 80 and my > sy - 110 and my < sy - 110 + 80:
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:
+            try:
+                os.startfile('miniLayer.exe')
+            except:
+                os.startfile('miniLayer.py')
+            sys.exit()
 
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_RIGHT:   
@@ -163,7 +208,7 @@ while True:
             spotilib.play()
 
     if settingsMenu == True:
-        pygame.draw.rect(screen, blue2, [0,0,sx,sy])
+        screen.blit(menuBack, (0,0))
         screen.blit(back, (10, 10))
         if mx > 10 and mx < 10 + 90 and my > 10 and my < 10 + 90:
             if event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -196,4 +241,5 @@ while True:
                     mode = RESIZABLE
                     screen = pygame.display.set_mode([sx,sy], mode)
 
+    clock.tick(18)
     display.update()
