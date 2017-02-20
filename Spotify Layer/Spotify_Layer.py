@@ -143,12 +143,12 @@ while True:
         if spotilib.song() != 'There is noting playing at this moment':
             songDisplay = spotilib.song()
         else:
-            songDisplay = ''
+            songDisplay = songDisplay
 
         if spotilib.artist() != 'There is noting playing at this moment':
             artistDisplay = spotilib.artist()
         else:
-            artistDisplay = ''
+            artistDisplay = artistDisplay
     except:
         songDisplay = ":'("
         artistDisplay = 'An error occured'            
