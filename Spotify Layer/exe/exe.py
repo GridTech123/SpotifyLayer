@@ -1,3 +1,4 @@
+import os
 import cx_Freeze
 
 executables = [cx_Freeze.Executable('Spotify_Layer.py'), cx_Freeze.Executable('miniLayer.py')]
@@ -14,5 +15,4 @@ cx_Freeze.setup(name = 'Spotify Layer', version = '1.4.0', options = {'build_exe
 "pause.png",
 "settings.png",
 "smallWindow.png",
-"unpause.png",
-"logo.ico"]}}, executables = executables)
+"unpause.png"]}}, executables = executables)

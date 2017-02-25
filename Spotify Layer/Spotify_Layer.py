@@ -40,8 +40,6 @@ gray3 = (140, 138, 139)
 #images
 try:
     os.chdir('images')
-    background = pygame.image.load('background.png')
-    background2 = pygame.image.load('background2.png')
     pause = pygame.image.load('pause.png')
     unpause = pygame.image.load('unpause.png')
     back = pygame.image.load('back.png')
@@ -57,6 +55,30 @@ except:
 
 #setup
 clock = pygame.time.Clock()
+os.chdir('backgroundImages')
+try:
+    backgroundInfo = open('backgroundData.txt', 'r')
+    backgroundLines = backgroundInfo.readlines()
+    backgroundType = backgroundLines[0]
+    line2 = backgroundLines[2]
+    if backgroundType == '2\n':
+        background = pygame.image.load(line2[0:len(line2)-1])
+        line3 = backgroundLines[3]
+        background2 = pygame.image.load(line3[0:len(line3)])
+    elif backgroundType == '1\n':
+        background = pygame.image.load(line2[0:len(line2)])
+except:
+    backgroundInfo = open('background1.png.txt', 'r')
+    backgroundLines = backgroundInfo.readlines()
+    backgroundType = backgroundLines[0]
+    line2 = backgroundLines[2]
+    if backgroundType == '2\n':
+        background = pygame.image.load(line2[0:len(line2)-1])
+        line3 = backgroundLines[3]
+        background2 = pygame.image.load(line3[0:len(line3)])
+    elif backgroundType == '1\n':
+        background = pygame.image.load(line2[0:len(line2)])
+os.chdir('..')
 
 #vars
 settingsMenu = False
@@ -70,8 +92,6 @@ try:
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue importing win32api(pywin32), make sure to use exe', 20, 20)   
 try:  
-    #print "Width =", GetSystemMetrics(0)
-    #print "Height =", GetSystemMetrics(1)
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % ( GetSystemMetrics(0) / 4, 1)
     pygame.init()
     wsx = GetSystemMetrics(0)
@@ -93,6 +113,9 @@ title_font = pygame.font.SysFont('Calibri', 100)
 #window settings
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Spotify Layer")
+
+import text
+text.init(screen)
 
 #first time
 try:
@@ -124,20 +147,26 @@ while True:
     mx, my = pygame.mouse.get_pos()
 
     background = pygame.transform.scale(background, (sx + 10, sy))
-    background2 = pygame.transform.scale(background2, (sx + 10, sy))
     menuBack = pygame.transform.scale(menuBack, (sx, sy))
     screen.blit(background, (x1, 0))
-    screen.blit(background2, (x2, 0))
+    try:
+        background2 = pygame.transform.scale(background2, (sx + 10, sy))
+        screen.blit(background2, (x2, 0))
+    except:
+        pass
 
-    if x1 < sx:
-        x1 = x1 + 4
-    else:
-        x1 = sx - sx - sx
+    if backgroundType == '2\n':
+        if x1 < sx:
+            x1 = x1 + 4
+        else:
+            x1 = sx - sx - sx
 
-    if x2 < sx:
-        x2 = x2 + 4
-    else:
-        x2 = sx - sx - sx
+        if x2 < sx:
+            x2 = x2 + 4
+        else:
+            x2 = sx - sx - sx
+    elif backgroundType == '1\n':
+        x1 = x1
 
     try:
         if spotilib.song() != 'There is noting playing at this moment':
@@ -213,6 +242,7 @@ while True:
         if mx > 10 and mx < 10 + 90 and my > 10 and my < 10 + 90:
             if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 settingsMenu = False
+
         screen.blit(menu_font.render('Fullscreen: ', True, black),(100, 100))
         if fullscreen == False:
             screen.blit(cross, (300, 70))
@@ -240,6 +270,56 @@ while True:
                     sy = wsy - 100
                     mode = RESIZABLE
                     screen = pygame.display.set_mode([sx,sy], mode)
+
+        screen.blit(menu_font.render('Background: ', True, black),(100, 200))
+        os.chdir('backgrounds')
+        backgrounds = os.listdir(os.getcwd())
+        backgroundClock = 0
+        backgroundX = 100
+        backgroundY = 260
+        while True:
+            try:
+                #print 'hi'
+                loadingBackground = pygame.image.load(backgrounds[backgroundClock])
+                loadingBackground = pygame.transform.scale(loadingBackground, (190, 190))
+                if mx > backgroundX and mx < backgroundX + 200 and my > backgroundY and my < backgroundY + 200:
+                    pygame.draw.rect(screen, blue4, [backgroundX, backgroundY, 200, 200])   
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        os.chdir('..')
+                        os.chdir('backgroundImages')
+                        backgroundInfo = open(backgrounds[backgroundClock]+str('.txt'), 'r')
+                        backgroundLines = backgroundInfo.readlines()
+                        backgroundType = backgroundLines[0]
+                        line2 = backgroundLines[2]
+                        if backgroundType == '2\n':
+                            background = pygame.image.load(line2[0:len(line2)-1])
+                            line3 = backgroundLines[3]
+                            background2 = pygame.image.load(line3[0:len(line3)])
+                        elif backgroundType == '1\n':
+                            background = pygame.image.load(line2[0:len(line2)])
+                        x1 = 0
+                        x2 = sx - sx - sx
+                        w = open('backgroundData.txt', 'w')
+                        w.write(backgroundLines[0])
+                        w.write(backgroundLines[1])
+                        w.write(backgroundLines[2])
+                        if backgroundType == '2\n':
+                            w.write(backgroundLines[3])
+                        w.close()
+                        os.chdir('..')           
+                        settingsMenu = False   
+                        break     
+                else:
+                    pygame.draw.rect(screen, blue3, [backgroundX, backgroundY, 200, 200])
+                screen.blit(loadingBackground, (backgroundX + 5, backgroundY + 5))
+                backgroundClock = backgroundClock + 1
+                backgroundX = backgroundX + 210
+                if backgroundX + 200 + 100 > sx:
+                    backgroundY = backgroundY + 210
+                    backgroundX = 0
+            except:
+                os.chdir('..')
+                break
 
     clock.tick(18)
     display.update()

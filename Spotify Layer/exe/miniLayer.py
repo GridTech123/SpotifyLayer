@@ -64,7 +64,7 @@ except:
 try:  
     #print "Width =", GetSystemMetrics(0)
     #print "Height =", GetSystemMetrics(1)
-    location = (GetSystemMetrics(0) / 4, 0)
+    location = ((GetSystemMetrics(0) / 2) - (700 / 2), 0)
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (location)
     pygame.init()
     screen_x = 700
@@ -121,8 +121,22 @@ while True:
     else:
         x2 = sx - sx - sx
 
-    screen.blit(big_font.render(spotilib.song(), True, black),(10, 20))
-    screen.blit(menu_font.render(spotilib.artist(), True, black),(10, 70))
+    try:
+        if spotilib.song() != 'There is noting playing at this moment':
+            songDisplay = spotilib.song()
+        else:
+            songDisplay = songDisplay
+
+        if spotilib.artist() != 'There is noting playing at this moment':
+            artistDisplay = spotilib.artist()
+        else:
+            artistDisplay = artistDisplay
+    except:
+        songDisplay = ":'("
+        artistDisplay = 'An error occured'            
+
+    screen.blit(big_font.render(songDisplay, True, black),(10, 20))
+    screen.blit(menu_font.render(artistDisplay, True, black),(10, 70))
 
     screen.blit(move, (1, 1))
     if mx > 1 and mx < 21 and my > 1 and my < 21:

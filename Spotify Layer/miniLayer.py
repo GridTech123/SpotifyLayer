@@ -39,9 +39,11 @@ gray3 = (140, 138, 139)
 
 #images
 try:
-    os.chdir('images')
+    os.chdir('backgroundImages')
     background = pygame.image.load('background.png')
     background2 = pygame.image.load('background2.png')
+    os.chdir('..')
+    os.chdir('images')
     pause = pygame.image.load('pause.png')
     unpause = pygame.image.load('unpause.png')
     back = pygame.image.load('back.png')
