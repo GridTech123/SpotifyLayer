@@ -12,6 +12,7 @@ try:
     from Tkinter import *
     from tkFileDialog import*
     import random
+    import subprocess
 except:
     os.chdir('html')
     os.startfile('missingModule.html')
@@ -49,6 +50,8 @@ try:
     logo = pygame.image.load('logo.png')
     menuBack = pygame.image.load('menuBack.png')
     samllWindow = pygame.image.load('smallWindow.png')
+    errorStrip = pygame.image.load('errorStrip.png')
+    lyrics = pygame.image.load('lyricsLogo.png')
     os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
@@ -85,6 +88,8 @@ settingsMenu = False
 fullscreen = False
 songDisplay = ''
 artistDisplay = ''
+error = 0
+lyricsMenu = False
 
 #pygame start
 try:
@@ -113,9 +118,6 @@ title_font = pygame.font.SysFont('Calibri', 100)
 #window settings
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Spotify Layer")
-
-import text
-text.init(screen)
 
 #first time
 try:
@@ -179,32 +181,41 @@ while True:
         else:
             artistDisplay = artistDisplay
     except:
-        songDisplay = ":'("
-        artistDisplay = 'An error occured'            
+        errorStrip = pygame.transform.scale(errorStrip, (sx, 100))
+        screen.blit(errorStrip, (0,0))
+        screen.blit(big_font.render('An error occured', True, black),(0, 0))
+        error = 100
+        songDisplay = ""
+        artistDisplay = ''            
 
-    screen.blit(big_font.render(songDisplay, True, black),(400, 10))
-    screen.blit(menu_font.render(artistDisplay, True, black),(400, 110))
+    screen.blit(big_font.render(songDisplay, True, black),(400, 10 + error))
+    screen.blit(menu_font.render(artistDisplay, True, black),(400, 110 + error))
 
     if spotilib.song() == 'There is noting playing at this moment':
-        screen.blit(unpause, ((sx / 2) - (90 / 2), 160))
+        screen.blit(unpause, ((sx / 2) - (90 / 2), 160 + error))
         if mx > (sx / 2) - (90 / 2) and mx < (sx / 2) - (90 / 2) + 90 and my > 160 and my < 160 + 90:
             if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 spotilib.play()
     else:
-        screen.blit(pause, ((sx / 2) - (90 / 2), 160))
+        screen.blit(pause, ((sx / 2) - (90 / 2), 160 + error))
         if mx > (sx / 2) - (90 / 2) and mx < (sx / 2) - (90 / 2) + 90 and my > 160 and my < 160 + 90:
             if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 spotilib.pause()
 
-    screen.blit(unpause, ((sx / 2) - (90 / 2) + 100, 160))
+    screen.blit(unpause, ((sx / 2) - (90 / 2) + 100, 160 + error))
     if mx > (sx / 2) - (90 / 2) + 100 and mx < (sx / 2) - (90 / 2) + 100 + 90 and my > 160 and my < 160 + 90:
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             spotilib.next()
 
-    screen.blit(back, ((sx / 2) - (90 / 2) - 100, 160))
+    screen.blit(back, ((sx / 2) - (90 / 2) - 100, 160 + error))
     if mx > (sx / 2) - (90 / 2) - 100 and mx < (sx / 2) - (90 / 2) - 100 + 90 and my > 160 and my < 160 + 90:
         if event.type == MOUSEBUTTONDOWN and event.button == 1:
             spotilib.previous()
+
+    screen.blit(lyrics, (sx - 300, sy - 110))
+    if mx > sx - 300 and mx < sx - 300 + 80 and my > sy - 110 and my < sy - 110 + 80:
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:
+            lyricsMenu = True
 
     screen.blit(settings, (sx - 200, sy - 110))
     if mx > sx - 200 and mx < sx - 200 + 80 and my > sy - 110 and my < sy - 110 + 80:
@@ -235,6 +246,23 @@ while True:
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_UP:   
             spotilib.play()
+
+    if lyricsMenu == True:
+        screen.blit(menuBack, (0,0))
+        screen.blit(menu_font.render('Generating Lyrics', True, black),(sx / 2 - 100, sy / 2))
+        pygame.display.update()
+        artistEmbed = artistDisplay.replace(' ', '-')
+        artistEmbed = artistEmbed.replace("'", '-')
+        songEmbed = songDisplay.replace(' ', '-')
+        songEmbed = songEmbed.replace("'", '-')
+        f = open('lyrics.html', 'w')
+        f.write('<html><head></head><body>')
+        f.write('<image src="lyricBack.png" width="100%">')
+        f.write('<div><iframe src="http://www.musixmatch.com/lyrics/'+str(artistEmbed)+str('/')+str(songEmbed)+str('/embed?theme=light" style="border:none;background:transparent;" width="100%" height="100%" border=0></iframe></div>'))
+        f.write('</body></html>')
+        f.close()
+        os.startfile('lyrics.html')
+        lyricsMenu = False
 
     if settingsMenu == True:
         screen.blit(menuBack, (0,0))
@@ -320,6 +348,15 @@ while True:
             except:
                 os.chdir('..')
                 break
+
+    s = subprocess.check_output('tasklist', shell=True)
+    if not "Spotify.exe" in s:
+        errorStrip = pygame.transform.scale(errorStrip, (sx, 100))
+        screen.blit(errorStrip, (0,0))
+        screen.blit(big_font.render('Spotify is not running', True, black),(0, 0))
+        error = 100
+    else:
+        error = 0
 
     clock.tick(18)
     display.update()

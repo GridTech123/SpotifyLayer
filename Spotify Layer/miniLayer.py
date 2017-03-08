@@ -12,6 +12,7 @@ try:
     from Tkinter import *
     from tkFileDialog import*
     import random
+    import subprocess
 except:
     os.chdir('html')
     os.startfile('missingModule.html')
@@ -54,6 +55,7 @@ try:
     menuBack = pygame.image.load('menuBack.png')
     move = pygame.image.load('move.png')
     close = pygame.image.load('close.png')
+    errorStrip = pygame.image.load('errorStrip.png')
     os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
@@ -89,6 +91,7 @@ title_font = pygame.font.SysFont('Calibri', 100)
 
 #vars
 moveTrig = False
+error = 0
 
 #window settings
 pygame.display.set_icon(logo)
@@ -139,8 +142,8 @@ while True:
         songDisplay = ":'("
         artistDisplay = 'An error occured'            
 
-    screen.blit(big_font.render(songDisplay, True, black),(10, 20))
-    screen.blit(menu_font.render(artistDisplay, True, black),(10, 70))
+    screen.blit(big_font.render(songDisplay, True, black),(10, 20 + error))
+    screen.blit(menu_font.render(artistDisplay, True, black),(10, 70 + error))
 
     screen.blit(move, (1, 1))
     if mx > 1 and mx < 21 and my > 1 and my < 21:
@@ -155,6 +158,15 @@ while True:
             except:
                 os.startfile('Spotify_Layer.py')
             sys.exit()
+
+    s = subprocess.check_output('tasklist', shell=True)
+    if not "Spotify.exe" in s:
+        errorStrip = pygame.transform.scale(errorStrip, (sx, sy))
+        screen.blit(errorStrip, (0,0))
+        screen.blit(big_font.render('Spotify is not running', True, black),(100, 0))
+        error = 100
+    else:
+        error = 0
 
     clock.tick(20)
     display.update()
