@@ -1,4 +1,12 @@
 import spotilib
+
+try:
+    import Grid_Vertex
+    Grid_Vertex.init()
+    gv = True
+except:
+    gv = False
+
 try:
     import os
     import pygame
@@ -90,6 +98,8 @@ songDisplay = ''
 artistDisplay = ''
 error = 0
 lyricsMenu = False
+presentationMode = False
+fpsMode = True
 
 #pygame start
 try:
@@ -114,6 +124,8 @@ hud_font = pygame.font.SysFont('Calibri', 40)
 hud_font2 = pygame.font.SysFont('Calibri', 20)
 big_font = pygame.font.SysFont('Calibri', 80)
 title_font = pygame.font.SysFont('Calibri', 100)
+big2_font = pygame.font.SysFont('Calibri', 100)
+big3_font = pygame.font.SysFont('Calibri', 200)
 
 #window settings
 pygame.display.set_icon(logo)
@@ -135,6 +147,7 @@ x2 = sx - sx - sx
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
+            Grid_Vertex.send(None, None)
             pygame.quit()
             sys.exit()
         elif event.type==VIDEORESIZE:
@@ -158,15 +171,16 @@ while True:
         pass
 
     if backgroundType == '2\n':
-        if x1 < sx:
-            x1 = x1 + 4
-        else:
-            x1 = sx - sx - sx
+        if fpsMode == False:
+            if x1 < sx:
+                x1 = x1 + 4
+            else:
+                x1 = sx - sx - sx
 
-        if x2 < sx:
-            x2 = x2 + 4
-        else:
-            x2 = sx - sx - sx
+            if x2 < sx:
+                x2 = x2 + 4
+            else:
+                x2 = sx - sx - sx
     elif backgroundType == '1\n':
         x1 = x1
 
@@ -188,64 +202,76 @@ while True:
         songDisplay = ""
         artistDisplay = ''            
 
-    screen.blit(big_font.render(songDisplay, True, black),(400, 10 + error))
-    screen.blit(menu_font.render(artistDisplay, True, black),(400, 110 + error))
+    if presentationMode == True:
+        if fpsMode == False:
+            screen.blit(big3_font.render(songDisplay, True, gray2),(403, 13 + error))
+        screen.blit(big3_font.render(songDisplay, True, white),(400, 10 + error))
+        screen.blit(big2_font.render(artistDisplay, True, white),(400, 200 + error))
 
-    if spotilib.song() == 'There is noting playing at this moment':
-        screen.blit(unpause, ((sx / 2) - (90 / 2), 160 + error))
-        if mx > (sx / 2) - (90 / 2) and mx < (sx / 2) - (90 / 2) + 90 and my > 160 and my < 160 + 90:
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                spotilib.play()
-    else:
-        screen.blit(pause, ((sx / 2) - (90 / 2), 160 + error))
-        if mx > (sx / 2) - (90 / 2) and mx < (sx / 2) - (90 / 2) + 90 and my > 160 and my < 160 + 90:
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+    if presentationMode == False:
+        if fpsMode == False:
+            screen.blit(big_font.render(songDisplay, True, gray2),(403, 13 + error))
+        screen.blit(big_font.render(songDisplay, True, white),(400, 10 + error))
+        screen.blit(menu_font.render(artistDisplay, True, white),(400, 110 + error))
+
+    if presentationMode == False:
+        if fpsMode == False:
+            if spotilib.song() == 'There is noting playing at this moment':
+                screen.blit(unpause, ((sx / 2) - (90 / 2), 160 + error))
+                if mx > (sx / 2) - (90 / 2) and mx < (sx / 2) - (90 / 2) + 90 and my > 160 and my < 160 + 90:
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        spotilib.play()
+            else:
+                screen.blit(pause, ((sx / 2) - (90 / 2), 160 + error))
+                if mx > (sx / 2) - (90 / 2) and mx < (sx / 2) - (90 / 2) + 90 and my > 160 and my < 160 + 90:
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        spotilib.pause()
+
+            screen.blit(unpause, ((sx / 2) - (90 / 2) + 100, 160 + error))
+            if mx > (sx / 2) - (90 / 2) + 100 and mx < (sx / 2) - (90 / 2) + 100 + 90 and my > 160 and my < 160 + 90:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    spotilib.next()
+
+            screen.blit(back, ((sx / 2) - (90 / 2) - 100, 160 + error))
+            if mx > (sx / 2) - (90 / 2) - 100 and mx < (sx / 2) - (90 / 2) - 100 + 90 and my > 160 and my < 160 + 90:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    spotilib.previous()
+
+            screen.blit(lyrics, (sx - 300, sy - 110))
+            if mx > sx - 300 and mx < sx - 300 + 80 and my > sy - 110 and my < sy - 110 + 80:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    lyricsMenu = True
+
+            screen.blit(settings, (sx - 200, sy - 110))
+            if mx > sx - 200 and mx < sx - 200 + 80 and my > sy - 110 and my < sy - 110 + 80:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    settingsMenu = True
+
+            screen.blit(samllWindow, (sx - 100, sy - 110))
+            if mx > sx - 100 and mx < sx - 100 + 80 and my > sy - 110 and my < sy - 110 + 80:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    try:
+                        os.startfile('miniLayer.exe')
+                    except:
+                        os.startfile('miniLayer.py')
+                    sys.exit()
+
+    if fpsMode == False:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:   
+                spotilib.next()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:   
+                spotilib.previous()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:   
                 spotilib.pause()
 
-    screen.blit(unpause, ((sx / 2) - (90 / 2) + 100, 160 + error))
-    if mx > (sx / 2) - (90 / 2) + 100 and mx < (sx / 2) - (90 / 2) + 100 + 90 and my > 160 and my < 160 + 90:
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            spotilib.next()
-
-    screen.blit(back, ((sx / 2) - (90 / 2) - 100, 160 + error))
-    if mx > (sx / 2) - (90 / 2) - 100 and mx < (sx / 2) - (90 / 2) - 100 + 90 and my > 160 and my < 160 + 90:
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            spotilib.previous()
-
-    screen.blit(lyrics, (sx - 300, sy - 110))
-    if mx > sx - 300 and mx < sx - 300 + 80 and my > sy - 110 and my < sy - 110 + 80:
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            lyricsMenu = True
-
-    screen.blit(settings, (sx - 200, sy - 110))
-    if mx > sx - 200 and mx < sx - 200 + 80 and my > sy - 110 and my < sy - 110 + 80:
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            settingsMenu = True
-
-    screen.blit(samllWindow, (sx - 100, sy - 110))
-    if mx > sx - 100 and mx < sx - 100 + 80 and my > sy - 110 and my < sy - 110 + 80:
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            try:
-                os.startfile('miniLayer.exe')
-            except:
-                os.startfile('miniLayer.py')
-            sys.exit()
-
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_RIGHT:   
-            spotilib.next()
-
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:   
-            spotilib.previous()
-
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_DOWN:   
-            spotilib.pause()
-
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_UP:   
-            spotilib.play()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:   
+                spotilib.play()
 
     if lyricsMenu == True:
         screen.blit(menuBack, (0,0))
@@ -299,15 +325,26 @@ while True:
                     mode = RESIZABLE
                     screen = pygame.display.set_mode([sx,sy], mode)
 
-        screen.blit(menu_font.render('Background: ', True, black),(100, 200))
+        screen.blit(menu_font.render('presentation mode: ', True, black),(100, 200))
+        if presentationMode == False:
+            screen.blit(cross, (450, 170))
+            if mx > 450 and mx < 450 + 90 and my > 170 and my < 170 + 90:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:            
+                    presentationMode = True
+        elif presentationMode == True:
+            screen.blit(check, (450, 170))
+            if mx > 450 and mx < 450 + 90 and my > 170 and my < 170 + 90:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:            
+                    presentationMode = False
+
+        screen.blit(menu_font.render('Background: ', True, black),(100, 300))
         os.chdir('backgrounds')
         backgrounds = os.listdir(os.getcwd())
         backgroundClock = 0
         backgroundX = 100
-        backgroundY = 260
+        backgroundY = 360
         while True:
             try:
-                #print 'hi'
                 loadingBackground = pygame.image.load(backgrounds[backgroundClock])
                 loadingBackground = pygame.transform.scale(loadingBackground, (190, 190))
                 if mx > backgroundX and mx < backgroundX + 200 and my > backgroundY and my < backgroundY + 200:
@@ -355,8 +392,21 @@ while True:
         screen.blit(errorStrip, (0,0))
         screen.blit(big_font.render('Spotify is not running', True, black),(0, 0))
         error = 100
+    elif not clock.get_fps < 4:
+        error = 0
+
+    if clock.get_fps() < 4:
+        errorStrip = pygame.transform.scale(errorStrip, (sx, 100))
+        screen.blit(errorStrip, (0,0))
+        screen.blit(big_font.render('You are in Low FPS mode', True, black),(0, 0))
+        error = 100 
+        fpsMode = True
     else:
         error = 0
+        fpsMode = False
+
+    if gv == True:
+        Grid_Vertex.send(songDisplay + ' - '+str(artistDisplay), 'Spotify Layer')
 
     clock.tick(18)
     display.update()
