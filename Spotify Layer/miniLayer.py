@@ -56,6 +56,8 @@ try:
     move = pygame.image.load('move.png')
     close = pygame.image.load('close.png')
     errorStrip = pygame.image.load('errorStrip.png')
+    more = pygame.image.load('downArrow.png')
+    less = pygame.image.load('upArrow.png')
     os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
@@ -92,6 +94,8 @@ title_font = pygame.font.SysFont('Calibri', 100)
 #vars
 moveTrig = False
 error = 0
+moreScreen = False
+lyricsMenu = False
 
 #window settings
 pygame.display.set_icon(logo)
@@ -114,7 +118,7 @@ while True:
 
     background = pygame.transform.scale(background, (sx + 10, sy))
     background2 = pygame.transform.scale(background2, (sx + 10, sy))
-    menuBack = pygame.transform.scale(menuBack, (sx, sy))
+    menuBack = pygame.transform.scale(menuBack, (sx, 160))
     screen.blit(background, (x1, 0))
     screen.blit(background2, (x2, 0))
 
@@ -159,6 +163,67 @@ while True:
                 os.startfile('Spotify_Layer.py')
             sys.exit()
 
+    if moreScreen == False:
+        screen.blit(more, (61, 1))
+        if mx > 61 and mx < 81 and my > 1 and my < 21:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:  
+                    errorStrip = pygame.transform.scale(errorStrip, (sx, sy))
+                    screen.blit(errorStrip, (0,0))
+                    screen.blit(big_font.render('Please wait', True, black),(100, 0))
+                    error = 100   
+                    display.update()
+
+                    screen_x = 700
+                    screen_y = 160
+                    screen = pygame.display.set_mode([screen_x,screen_y], NOFRAME)
+                    middlex = screen_x/2
+                    middley = screen_y/2
+
+                    error = 0
+                    moreScreen = True
+
+    elif moreScreen == True:
+        screen.blit(less, (61, 1))
+        if mx > 61 and mx < 81 and my > 1 and my < 21:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:  
+                    errorStrip = pygame.transform.scale(errorStrip, (sx, sy))
+                    screen.blit(errorStrip, (0,0))
+                    screen.blit(big_font.render('Please wait', True, black),(100, 0))
+                    error = 100   
+                    display.update()
+
+                    screen_x = 700
+                    screen_y = 110
+                    screen = pygame.display.set_mode([screen_x,screen_y], NOFRAME)
+                    middlex = screen_x/2
+                    middley = screen_y/2
+
+                    error = 0
+                    moreScreen = False
+
+    if moreScreen == True:
+        if mx > 0 and mx < sx and my > 110 and my < 160:
+            pygame.draw.rect(screen, blue3, [0, 110, sx, 50])
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:  
+                lyricsMenu = True
+                errorStrip = pygame.transform.scale(errorStrip, (sx, sy))
+                screen.blit(errorStrip, (0,0))
+                screen.blit(big_font.render('Please wait', True, black),(100, 0))
+                error = 100   
+                display.update()
+
+                screen_x = 700
+                screen_y = 110
+                screen = pygame.display.set_mode([screen_x,screen_y], NOFRAME)
+                middlex = screen_x/2
+                middley = screen_y/2
+
+                error = 0
+                moreScreen = False
+        else:
+            pygame.draw.rect(screen, blue2, [0, 110, sx, 50])
+        screen.blit(hud_font.render('Lyrics', True, black),(0, 110))
+
     s = subprocess.check_output('tasklist', shell=True)
     if not "Spotify.exe" in s:
         errorStrip = pygame.transform.scale(errorStrip, (sx, sy))
@@ -167,6 +232,23 @@ while True:
         error = 100
     else:
         error = 0
+
+    if lyricsMenu == True:
+        screen.blit(menuBack, (0,0))
+        screen.blit(hud_font.render('Generating Lyrics', True, black),(sx / 2 - 100, 110))
+        pygame.display.update()
+        artistEmbed = artistDisplay.replace(' ', '-')
+        artistEmbed = artistEmbed.replace("'", '-')
+        songEmbed = songDisplay.replace(' ', '-')
+        songEmbed = songEmbed.replace("'", '-')
+        f = open('lyrics.html', 'w')
+        f.write('<html><head></head><body>')
+        f.write('<image src="lyricBack.png" width="100%">')
+        f.write('<div><iframe src="http://www.musixmatch.com/lyrics/'+str(artistEmbed)+str('/')+str(songEmbed)+str('/embed?theme=light" style="border:none;background:transparent;" width="100%" height="100%" border=0></iframe></div>'))
+        f.write('</body></html>')
+        f.close()
+        os.startfile('lyrics.html')
+        lyricsMenu = False
 
     clock.tick(20)
     display.update()

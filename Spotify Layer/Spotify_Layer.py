@@ -1,4 +1,5 @@
 import spotilib
+from shutil import copyfile
 
 try:
     import Grid_Vertex
@@ -60,6 +61,11 @@ try:
     samllWindow = pygame.image.load('smallWindow.png')
     errorStrip = pygame.image.load('errorStrip.png')
     lyrics = pygame.image.load('lyricsLogo.png')
+    starClicked = pygame.image.load('starClicked.png')
+    starNotClicked = pygame.image.load('starNotClicked.png')
+    blockedClicked = pygame.image.load('blockClicked.png')
+    blockedNotClicked = pygame.image.load('blockNotClicked.png')
+    share = pygame.image.load('share.png')
     os.chdir('..')
 except:
     pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
@@ -100,6 +106,27 @@ error = 0
 lyricsMenu = False
 presentationMode = False
 fpsMode = True
+error1 = 0
+error2 = 0
+error3 = 0
+shareMenu = False
+try:
+    pickle_in = open('favSongs.sl', 'r+')
+    favSongs = pickle.load(pickle_in)
+except:
+    favSongs = []
+    pickle_out = open('favSongs.sl', 'w')
+    pickle.dump(favSongs, pickle_out)
+    pickle_out.close()
+
+try:
+    pickle_in = open('banSongs.sl', 'r')
+    banSongs = pickle.load(pickle_in)
+except:
+    banSongs = []
+    pickle_out = open('banSongs.sl', 'w')
+    pickle.dump(banSongs, pickle_out)
+    pickle_out.close()
 
 #pygame start
 try:
@@ -204,16 +231,16 @@ while True:
 
     if presentationMode == True:
         if fpsMode == False:
-            screen.blit(big3_font.render(songDisplay, True, gray2),(403, 13 + error))
-        screen.blit(big3_font.render(songDisplay, True, white),(400, 10 + error))
-        screen.blit(big2_font.render(artistDisplay, True, white),(400, 200 + error))
+            screen.blit(big3_font.render(songDisplay, True, gray2),(203, 13 + error))
+        screen.blit(big3_font.render(songDisplay, True, white),(200, 10 + error))
+        screen.blit(big2_font.render(artistDisplay, True, white),(200, 200 + error))
 
     if presentationMode == False:
         if fpsMode == False:
-            screen.blit(big_font.render(songDisplay, True, gray2),(403, 13 + error))
-        screen.blit(big_font.render(songDisplay, True, white),(400, 10 + error))
-        screen.blit(menu_font.render(artistDisplay, True, white),(400, 110 + error))
-
+            screen.blit(big_font.render(songDisplay, True, gray2),(203, 13 + error))
+        screen.blit(big_font.render(songDisplay, True, white),(200, 10 + error))
+        screen.blit(menu_font.render(artistDisplay, True, white),(200, 110 + error))
+                
     if presentationMode == False:
         if fpsMode == False:
             if spotilib.song() == 'There is noting playing at this moment':
@@ -227,6 +254,41 @@ while True:
                     if event.type == MOUSEBUTTONDOWN and event.button == 1:
                         spotilib.pause()
 
+            if not spotilib.song() in favSongs:
+                screen.blit(starNotClicked, ((sx / 2) - (90 / 2) + 200, 160 + error)) 
+                if mx > (sx / 2) - (90 / 2) + 200 and mx < (sx / 2) - (90 / 2) + 200 + 40 and my > 160 and my < 160 + 40:
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        favSongs.append(str(spotilib.song()))
+                        pickle_out = open('favSongs.sl', 'r+')
+                        pickle.dump(favSongs, pickle_out)
+                        pickle_out.close()
+            else:
+                screen.blit(starClicked, ((sx / 2) - (90 / 2) + 200, 160 + error)) 
+                if mx > (sx / 2) - (90 / 2) + 200 and mx < (sx / 2) - (90 / 2) + 200 + 40 and my > 160 and my < 160 + 40:
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        favSongs.remove(spotilib.song())
+                        pickle_out = open('favSongs.sl', 'r+')
+                        pickle.dump(favSongs, pickle_out)
+                        pickle_out.close()
+
+            if not spotilib.song() in banSongs:
+                screen.blit(blockedNotClicked, ((sx / 2) - (90 / 2) + 200, 160 + 45 + error)) 
+                if mx > (sx / 2) - (90 / 2) + 200 and mx < (sx / 2) - (90 / 2) + 200 + 40 and my > 160 + 45 and my < 160 + 45 + 40:
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        banSongs.append(str(spotilib.song()))
+                        pickle_out = open('banSongs.sl', 'r+')
+                        pickle.dump(banSongs, pickle_out)
+                        pickle_out.close()
+            else:
+                screen.blit(blockedClicked, ((sx / 2) - (90 / 2) + 200, 160 + 45 + error)) 
+                spotilib.next()
+                if mx > (sx / 2) - (90 / 2) + 200 and mx < (sx / 2) - (90 / 2) + 200 + 40 and my > 160 + 45 and my < 160 + 45 + 40:
+                    if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                        banSongs.remove(spotilib.song())
+                        pickle_out = open('banSongs.sl', 'r+')
+                        pickle.dump(banSongs, pickle_out)
+                        pickle_out.close()
+
             screen.blit(unpause, ((sx / 2) - (90 / 2) + 100, 160 + error))
             if mx > (sx / 2) - (90 / 2) + 100 and mx < (sx / 2) - (90 / 2) + 100 + 90 and my > 160 and my < 160 + 90:
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:
@@ -236,6 +298,11 @@ while True:
             if mx > (sx / 2) - (90 / 2) - 100 and mx < (sx / 2) - (90 / 2) - 100 + 90 and my > 160 and my < 160 + 90:
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:
                     spotilib.previous()
+
+            screen.blit(share, (sx - 400, sy - 110))
+            if mx > sx - 400 and mx < sx - 400 + 80 and my > sy - 110 and my < sy - 110 + 80:
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    shareMenu = True
 
             screen.blit(lyrics, (sx - 300, sy - 110))
             if mx > sx - 300 and mx < sx - 300 + 80 and my > sy - 110 and my < sy - 110 + 80:
@@ -254,6 +321,7 @@ while True:
                         os.startfile('miniLayer.exe')
                     except:
                         os.startfile('miniLayer.py')
+                    Grid_Vertex.send(None, None)
                     sys.exit()
 
     if fpsMode == False:
@@ -289,6 +357,28 @@ while True:
         f.close()
         os.startfile('lyrics.html')
         lyricsMenu = False
+
+    if shareMenu == True:
+        screen.blit(menuBack, (0,0))
+        screen.blit(menu_font.render('Generating Share Script', True, black),(sx / 2 - 110, sy / 2))
+        pygame.display.update()
+        f = open('share.html', 'w')
+        f.write('<html><head></head><body>')
+        f.write('<h1>Favorite Songs</h1>')
+        songClock = 0
+        while True:
+            try:
+                f.write('<h4>'+str(favSongs[songClock])+('</h4>'))
+                songClock = songClock + 1
+            except:
+                if songClock == 0:
+                    os.write('<h3>You have no favorite songs</h3>')
+                break
+        f.write('</body></html>')
+        f.close()
+        os.startfile('share.html')
+        shareMenu = False
+
 
     if settingsMenu == True:
         screen.blit(menuBack, (0,0))
@@ -387,23 +477,35 @@ while True:
                 break
 
     s = subprocess.check_output('tasklist', shell=True)
+    if "bdcam.exe" in s:
+        errorStrip = pygame.transform.scale(errorStrip, (sx, 100))
+        screen.blit(errorStrip, (0,0))
+        screen.blit(big_font.render('Recording mode activated', True, black),(0, 0))
+        error3 = 100
+        #spotilib.pause()
+    else:
+        error3 = 0
+
+    s = subprocess.check_output('tasklist', shell=True)
     if not "Spotify.exe" in s:
         errorStrip = pygame.transform.scale(errorStrip, (sx, 100))
-        screen.blit(errorStrip, (0,0))
-        screen.blit(big_font.render('Spotify is not running', True, black),(0, 0))
-        error = 100
-    elif not clock.get_fps < 4:
-        error = 0
+        screen.blit(errorStrip, (0,0 + error3))
+        screen.blit(big_font.render('Spotify is not running', True, black),(0, 0 + error3))
+        error2 = 100
+    else:
+        error2 = 0
 
-    if clock.get_fps() < 4:
+    if clock.get_fps() < 2:
         errorStrip = pygame.transform.scale(errorStrip, (sx, 100))
-        screen.blit(errorStrip, (0,0))
-        screen.blit(big_font.render('You are in Low FPS mode', True, black),(0, 0))
-        error = 100 
+        screen.blit(errorStrip, (0,0 + error2 + error3))
+        screen.blit(big_font.render('You are in Low FPS mode', True, black),(0,0 + error2 + error3))
+        error1 = 100 
         fpsMode = True
     else:
-        error = 0
+        error1 = 0
         fpsMode = False
+
+    error = error1 + error2 + error3
 
     if gv == True:
         Grid_Vertex.send(songDisplay + ' - '+str(artistDisplay), 'Spotify Layer')
