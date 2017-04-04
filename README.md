@@ -1,7 +1,8 @@
 # SpotifyLayer
 An app that displays spotifys currently playing song in a GUI
 
-#Images
+# Images
+
 <img src="https://jv6ukq.bn1302.livefilestore.com/y3mLhRZQ_2bYhNFBLOCRj56aDEJOXww9Wf45fOo4OvPKPgZ83HI59o5AOGhfgfPecN_3vdPappiY7BlBtsAQa7ngNQwt8xJNAkHrBYYwznnS_78cL55Hwzb4FTL6O8pp4pPmNJLsz-W-H-3XKG5S1_RFYpPzuInzUnawuxbANoIRDc?width=660&height=350&cropmode=none" width="660" height="350" />
 <br>
 ^Spotify Layer in maximized mode
