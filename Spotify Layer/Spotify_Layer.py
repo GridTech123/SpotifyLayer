@@ -166,7 +166,10 @@ except:
     pickle_out = open('firstStart.pcr', 'w')
     pickle.dump(True, pickle_out)
     pickle_out.close()
-    rendermode = 'firstStart'
+    try:
+        os.startfile('welcome.exe')
+    except:
+        os.startfile('welcome.py')
 
 x1 = 0
 x2 = sx - sx - sx
