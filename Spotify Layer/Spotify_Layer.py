@@ -156,24 +156,36 @@ while True:
     mx, my = pygame.mouse.get_pos()
 
     if rendermode == 0:
-        if spotilib.song() != 'There is noting playing at this moment':
-            song = spotilib.song()
-        else:
-            song = song
-        songText = big_font.render(song, True, black)
-        songrect = songText.get_rect()
-        songrect.centerx = screen.get_rect().centerx
-        screen.blit(songText, (songrect))
+        try:
+            if spotilib.song() != 'There is noting playing at this moment':
+                song = spotilib.song()
+            else:
+                song = song
+            songText = big_font.render(song, True, black)
+            songrect = songText.get_rect()
+            songrect.centerx = screen.get_rect().centerx
+            screen.blit(songText, (songrect))
 
-        if spotilib.song() != 'There is noting playing at this moment':
-            artist = spotilib.artist()
-        else:
-            artist = artist
-        artistText = hud_font.render(artist, True, black)
-        artistrect = artistText.get_rect()
-        artistrect.centerx = screen.get_rect().centerx
-        artistrect.centery = 150
-        screen.blit(artistText, (artistrect))
+            if spotilib.song() != 'There is noting playing at this moment':
+                artist = spotilib.artist()
+            else:
+                artist = artist
+            artistText = hud_font.render(artist, True, black)
+            artistrect = artistText.get_rect()
+            artistrect.centerx = screen.get_rect().centerx
+            artistrect.centery = 150
+            screen.blit(artistText, (artistrect))
+        except:
+            songText = big_font.render('An error occured', True, black)
+            songrect = songText.get_rect()
+            songrect.centerx = screen.get_rect().centerx
+            screen.blit(songText, (songrect))
+
+            artistText = hud_font.render('An error occured', True, black)
+            artistrect = artistText.get_rect()
+            artistrect.centerx = screen.get_rect().centerx
+            artistrect.centery = 150
+            screen.blit(artistText, (artistrect))
 
         pygame.draw.rect(screen, gray3, [0,0,50,sy])
         #settings
@@ -289,7 +301,7 @@ while True:
         songEmbed = songEmbed.replace("'", '-')
         f = open('lyrics.html', 'w')
         f.write('<html><head></head><body>')
-        f.write('<div><iframe src="http://www.musixmatch.com/lyrics/'+str(artistEmbed)+str('/')+str(songEmbed)+str('/embed?theme=light" style="border:none;background:transparent;" width="100%" height="100%" border=0></iframe></div>'))
+        f.write('<div><iframe src="http://www.musixmatch.com/lyrics/'+str(artistEmbed)+str('/')+str(songEmbed)+str('/embed?theme=dark" style="border:none;background:transparent;" width="100%" height="100%" border=0></iframe></div>'))
         f.write('</body></html>')
         f.close()
         os.startfile('lyrics.html')
