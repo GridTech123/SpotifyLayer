@@ -1,4 +1,0 @@
-2
-
-background.png
-background2.png
