@@ -48,21 +48,55 @@ gray2 = (69, 67, 68)
 gray3 = (140, 138, 139)
 
 #images
+loadThemeClock = 0 
 try:
-    os.chdir('images')
-    logo = pygame.image.load('logo.png')
-    settings = pygame.image.load('cog.png')
-    share = pygame.image.load('share.png')
-    back = pygame.image.load('back.png')
-    starClicked = pygame.image.load('starClicked.png')
-    starNotClicked = pygame.image.load('starNotClicked.png')
-    blockedClicked = pygame.image.load('blockClicked.png')
-    blockedNotClicked = pygame.image.load('blockNotClicked.png')
-    menuBack = pygame.image.load('menuBack.png')
-    lyrics = pygame.image.load('lyrics.png')
-    os.chdir('..')
+    pickle_in = open('theme.sl', 'r+')
+    loadThemeName = pickle.load(pickle_in)
 except:
-    pyError.newError('temp Error', 'There was an error on start', 'there was an issue getting images', 20, 20) 
+    pickle_out = open('theme.sl', 'w')
+    pickle.dump('dark.txt', pickle_out)
+    pickle_out.close()
+    loadThemeName = 'dark.txt'
+
+os.chdir('themes')
+themes = os.listdir(os.getcwd())
+themes.remove('temp.txt')
+while True:
+    try:
+        if loadThemeName == themes[loadThemeClock]:
+            themeNum = loadThemeClock
+            break
+        else:
+            loadThemeClock = loadThemeClock + 1
+    except:
+        pyError.newError('Temp Error', 'There was an error on start', 'Error loading themes(none found)', 20, 20)   
+theme = open(themes[themeNum],'r+')
+themeLines = theme.read().splitlines()
+themeFolder = themeLines[0]
+backColor = themeLines[1]
+backColor = eval(backColor)
+sideColor = themeLines[2]
+sideColor = eval(sideColor)
+noteColor = themeLines[3]
+noteColor = eval(noteColor)
+textColor = themeLines[4]
+textColor = eval(textColor)
+os.chdir('..')
+os.chdir('theme files')
+os.chdir(themeFolder)
+logo = pygame.image.load('logo.png')
+settings = pygame.image.load('cog.png')
+share = pygame.image.load('share.png')
+back = pygame.image.load('back.png')
+starClicked = pygame.image.load('starClicked.png')
+starNotClicked = pygame.image.load('starNotClicked.png')
+blockedClicked = pygame.image.load('blockClicked.png')
+blockedNotClicked = pygame.image.load('blockNotClicked.png')
+menuBack = pygame.image.load('menuBack.png')
+lyrics = pygame.image.load('lyrics.png')
+os.chdir('..')
+os.chdir('..')
+
 
 #setup
 clock = pygame.time.Clock()
@@ -73,6 +107,7 @@ shareMenu = False
 lyricsMenu = False
 gvWait = 29
 gvDebug = False
+quit = False
 try:
     pickle_in = open('favSongs.sl', 'r+')
     favSongs = pickle.load(pickle_in)
@@ -132,7 +167,7 @@ except:
 
 def note(text):
     pygame.draw.rect(screen, gray, [sx - 400, sy - 300, 400, 200])
-    screen.blit(hud_font.render(text, True, black), (sx - 400, sy - 300))
+    screen.blit(hud_font.render(text, True, noteColor), (sx - 400, sy - 300))
     display.update()
 
 x1 = 0
@@ -151,7 +186,7 @@ while True:
             x2 = sx - sx - sx
 
     #settings
-    screen.fill(gray2)
+    screen.fill(backColor)
     clock.tick(200)
     mx, my = pygame.mouse.get_pos()
 
@@ -161,7 +196,7 @@ while True:
                 song = spotilib.song()
             else:
                 song = song
-            songText = big_font.render(song, True, black)
+            songText = big_font.render(song, True, textColor)
             songrect = songText.get_rect()
             songrect.centerx = screen.get_rect().centerx
             screen.blit(songText, (songrect))
@@ -170,45 +205,45 @@ while True:
                 artist = spotilib.artist()
             else:
                 artist = artist
-            artistText = hud_font.render(artist, True, black)
+            artistText = hud_font.render(artist, True, textColor)
             artistrect = artistText.get_rect()
             artistrect.centerx = screen.get_rect().centerx
             artistrect.centery = 150
             screen.blit(artistText, (artistrect))
         except:
-            songText = big_font.render('An error occured', True, black)
+            songText = big_font.render('An error occured', True, red)
             songrect = songText.get_rect()
             songrect.centerx = screen.get_rect().centerx
             screen.blit(songText, (songrect))
 
-            artistText = hud_font.render('An error occured', True, black)
+            artistText = hud_font.render('An error occured', True, red)
             artistrect = artistText.get_rect()
             artistrect.centerx = screen.get_rect().centerx
             artistrect.centery = 150
             screen.blit(artistText, (artistrect))
 
-        pygame.draw.rect(screen, gray3, [0,0,50,sy])
+        pygame.draw.rect(screen, sideColor, [0,0,50,sy])
         #settings
         screen.blit(settings, (0,0))
         if mx > 0 and mx < 100 and my > 0 and my < 50:
-           pygame.draw.rect(screen, gray, [50, 0 , 200, 50]) 
-           screen.blit(hud_font.render('settings', True, black), (50, 0))
+           pygame.draw.rect(screen, sideColor, [50, 0 , 200, 50]) 
+           screen.blit(hud_font.render('settings', True, textColor), (50, 0))
            if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 rendermode = 'settings'
                 pygame.time.wait(100)
         #share
         screen.blit(share, (0,60))
         if mx > 0 and mx < 100 and my > 60 and my < 110:
-           pygame.draw.rect(screen, gray, [50, 60 , 200, 50]) 
-           screen.blit(hud_font.render('share', True, black), (50, 60))
+           pygame.draw.rect(screen, sideColor, [50, 60 , 200, 50]) 
+           screen.blit(hud_font.render('share', True, textColor), (50, 60))
            if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 shareMenu = True
                 pygame.time.wait(100)
         #lyrics
         screen.blit(lyrics, (0,120))
         if mx > 0 and mx < 100 and my > 120 and my < 170:
-           pygame.draw.rect(screen, gray, [50, 120 , 200, 50]) 
-           screen.blit(hud_font.render('lyrics', True, black), (50, 120))
+           pygame.draw.rect(screen, sideColor, [50, 120 , 200, 50]) 
+           screen.blit(hud_font.render('lyrics', True, textColor), (50, 120))
            if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 lyricsMenu = True
                 pygame.time.wait(100)
@@ -260,19 +295,52 @@ while True:
                 pygame.time.wait(100)
         
         if gvDebug == False:
-            pygame.draw.rect(screen, gray, [0, 100, 300, 50])
-            screen.blit(hud_font.render('turn on gv debug', True, black), (0, 100))
-            if mx > 0 and mx < 300 and my > 100 and my < 150:
+            pygame.draw.rect(screen, sideColor, [100, 100, 300, 50])    
+            screen.blit(hud_font.render('turn on gv debug', True, textColor), (100, 100))
+            if mx > 100 and mx < 400 and my > 100 and my < 150:
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:      
                     gvDebug = True
                     pygame.time.delay(100)
         elif gvDebug == True:
-            pygame.draw.rect(screen, gray, [0, 100, 300, 50])
-            screen.blit(hud_font.render('turn off gv debug', True, black), (0, 100))
-            if mx > 0 and mx < 300 and my > 100 and my < 150:
+            pygame.draw.rect(screen, sideColor, [100, 100, 300, 50])
+            screen.blit(hud_font.render('turn off gv debug', True, textColor), (100, 100))
+            if mx > 100 and mx < 400 and my > 100 and my < 150:
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:      
                     gvDebug = False
                     pygame.time.delay(100)
+
+        screen.blit(menu_font.render('Themes:', True, black), (100, 200))
+
+        themePickerClock = 0
+        themePickerX = 100
+        themePickerY = 300
+        while True:
+            try:
+                if themes[themePickerClock] != '':
+                    pygame.draw.rect(screen, sideColor, [themePickerX, themePickerY, 300, 50])
+                    screen.blit(hud_font.render(themes[themePickerClock], True, textColor), (themePickerX, themePickerY)) 
+                    if mx > themePickerX and mx < themePickerX + 300 and my > themePickerY and my < themePickerY + 50:
+                        if event.type == MOUSEBUTTONDOWN and event.button == 1:     
+                            pickle_out = open('theme.sl', 'w')
+                            pickle.dump(themes[themePickerClock], pickle_out)
+                            pickle_out.close()
+                            try:
+                                os.startfile('Spotify_Layer.exe')
+                            except:
+                                os.startfile('Spotify_Layer.py')
+                            quit = True
+                    themePickerX = themePickerX + 400
+                    themePickerClock = themePickerClock + 1
+                    if themePickerX + 400 > sx:
+                        themePickerX = 0
+                        themePickerY = themePickerY + 100
+                else:
+                    break
+            except:
+                break
+                
+    if quit:
+        sys.exit()
 
     if shareMenu == True:
         note('Generating share script')
@@ -315,10 +383,13 @@ while True:
                 note('time until update ' +str(gvWait))
 
     if gv == True:
-        if gvWait > 100:
-            Grid_Vertex.send(song + ' - '+str(artist), 'Spotify Layer')
-            gvWait = 0
-        else:
-            gvWait = gvWait + 1
+        try:
+            if gvWait > 100:
+                Grid_Vertex.send(song + ' - '+str(artist), 'Spotify Layer')
+                gvWait = 0
+            else:
+                gvWait = gvWait + 1
+        except:
+            pass
 
     display.update()
