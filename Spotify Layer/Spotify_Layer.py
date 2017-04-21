@@ -1,16 +1,33 @@
 import pygame
 from pygame import *
 from pygame.locals import *
-mode = RESIZABLE
-screen = pygame.display.set_mode([1920,1080], mode)
-screen.fill((0,0,0))
-screen.blit(pygame.image.load('logo.png'), (960, 540))
-pygame.display.update()
 
+pygame.init()
+#fonts
+menu_font = pygame.font.SysFont('Calibri', 40)
+hud_font = pygame.font.SysFont('Calibri', 40)
+hud_font2 = pygame.font.SysFont('Calibri', 20)
+big_font = pygame.font.SysFont('Calibri', 80)
+title_font = pygame.font.SysFont('Calibri', 100)
+big2_font = pygame.font.SysFont('Calibri', 100)
+big3_font = pygame.font.SysFont('Calibri', 200)
+
+def loadingScreen(text):
+    mode = RESIZABLE
+    screen = pygame.display.set_mode([1920,1080], mode)
+    screen.fill((0,0,0))
+    screen.blit(pygame.image.load('logo.png'), (860, 440))
+    screen.blit(hud_font.render('Loading: '+str(text), True, (255, 255, 255)), (0, 0))
+    pygame.time.delay(50)
+    pygame.display.update()
+
+loadingScreen('spotilib')
 import spotilib
+loadingScreen('shutil')
 from shutil import copyfile
 
 try:
+    loadingScreen('GridVertex')
     import Grid_Vertex
     Grid_Vertex.init()
     gv = True
@@ -18,45 +35,68 @@ except:
     gv = False
 
 try:
+    loadingScreen('os')
     import os
+    loadingScreen('pygame')
     import pygame
     from pygame import *
     from pygame.locals import *
+    loadingScreen('random')
     import random
+    loadingScreen('sys')
     import sys
+    loadingScreen('pickle')
     import pickle
+    loadingScreen('time')
     import time
+    loadingScreen('pyerror')
     import pyError
+    loadingScreen('tkinter')
     from Tkinter import *
     from tkFileDialog import*
-    import random
+    loadingScreen('subprocess')
     import subprocess
 except:
     os.chdir('html')
     os.startfile('missingModule.html')
 
 try:
+    loadingScreen('pyError')
     import pyError
 except:
     os.chdir('html')
     os.startfile('missingPyError.html')
 
 #colors
+loadingScreen('color - white')
 white = (255, 255, 255)
+loadingScreen('color - black')
 black = (0, 0, 0)
+loadingScreen('color - blue')
 blue = (0, 0, 255)
+loadingScreen('color - blue2')
 blue2 = (44, 157, 201)
+loadingScreen('color - blue3')
 blue3 = (8, 140, 196)
+loadingScreen('color - blue4')
 blue4 = (40, 181, 166)
+loadingScreen('color - red')
 red = (255, 0, 0)
+loadingScreen('color - green')
 green = (0, 255, 0)
+loadingScreen('color - green2')
 green2 = (0, 153, 0)
+loadingScreen('color - green3')
 green3 = (0,100,0)
+loadingScreen('color - gray')
 gray = (158, 156, 166)
+loadingScreen('color - gray2')
 gray2 = (69, 67, 68)
+loadingScreen('color - gray3')
 gray3 = (140, 138, 139)
 
 #images
+loadingScreen('Theme')
 loadThemeClock = 0 
 try:
     pickle_in = open('theme.sl', 'r+')
@@ -115,16 +155,26 @@ os.chdir('..')
 
 
 #setup
+loadingScreen('var - clock')
 clock = pygame.time.Clock()
 
 #vars
+loadingScreen('var - rendermode')
 rendermode = 0
+loadingScreen('var - shareMenu')
 shareMenu = False
+loadingScreen('var - lyricsMenu')
 lyricsMenu = False
+loadingScreen('var - gvWait')
 gvWait = 29
+loadingScreen('var - gvDebug')
 gvDebug = False
+loadingScreen('var - quit')
 quit = False
+loadingScreen('var - frames')
+frames = 0
 try:
+    loadingScreen('var - favSongs')
     pickle_in = open('favSongs.sl', 'r+')
     favSongs = pickle.load(pickle_in)
 except:
@@ -134,6 +184,7 @@ except:
     pickle_out.close()
 
 try:
+    loadingScreen('var - banSongs')
     pickle_in = open('banSongs.sl', 'r')
     banSongs = pickle.load(pickle_in)
 except:
@@ -143,6 +194,7 @@ except:
     pickle_out.close()
 
 #pygame start
+loadingScreen('init sl')
 try:
     from win32api import GetSystemMetrics
 except:
@@ -159,20 +211,12 @@ try:
 except:
     pyError.newError('poly cities Error', 'There was an error on start', 'We dont know what happened', 20, 20)   
 
-#fonts
-menu_font = pygame.font.SysFont('Calibri', 40)
-hud_font = pygame.font.SysFont('Calibri', 40)
-hud_font2 = pygame.font.SysFont('Calibri', 20)
-big_font = pygame.font.SysFont('Calibri', 80)
-title_font = pygame.font.SysFont('Calibri', 100)
-big2_font = pygame.font.SysFont('Calibri', 100)
-big3_font = pygame.font.SysFont('Calibri', 200)
-
 #window settings
 pygame.display.set_icon(logo)
 pygame.display.set_caption("Spotify Layer")
 
 #first time
+loadingScreen('firststart.pcr')
 try:
     pickle_in = open('firstStart.pcr', 'r')
     rendermode = 0
@@ -188,6 +232,7 @@ def note(text):
 
 x1 = 0
 x2 = sx - sx - sx
+loadingScreen('starting...')
 #program
 while True:
     for event in pygame.event.get():
@@ -196,6 +241,7 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type==VIDEORESIZE:
+            loadingScreen('Resetting background')
             screen=pygame.display.set_mode(event.dict['size'], mode)
             sx, sy = screen.get_size()
             x1 = 0
@@ -208,6 +254,7 @@ while True:
                 backImg = pygame.image.load(backColor)
                 os.chdir('..')
                 os.chdir('..')
+            loadingScreen('resuming Spotify Layer')
 
     #settings
     try:
@@ -259,6 +306,7 @@ while True:
            screen.blit(hud_font.render('settings', True, textColor), (50, 0))
            if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 rendermode = 'settings'
+                settingsFrame = frames
                 pygame.time.wait(100)
         #share
         screen.blit(share, (0,60))
@@ -342,6 +390,8 @@ while True:
 
         screen.blit(menu_font.render('Themes:', True, black), (100, 200))
 
+        if frames == settingsFrame + 1:
+            loadingScreen('Templates')
         themePickerClock = 0
         themePickerX = 100
         themePickerY = 300
@@ -383,30 +433,36 @@ while True:
                     break
             except:
                 break
+
+        if frames == settingsFrame + 1:
+            loadingScreen('resuming Spotify Layer')
                 
     if quit:
         sys.exit()
 
     if shareMenu == True:
-        note('Generating share script')
         f = open('share.html', 'w')
         f.write('<html><head></head><body>')
         f.write('<h1>Favorite Songs</h1>')
         songClock = 0
         while True:
             try:
-                f.write('<h4>'+str(favSongs[songClock])+('</h4>'))
+                f.write('<h4>'+str(favSongs[songClock])+('</h4> \n'))
+                loadingScreen('Creating Share Script - Added: ' +str(favSongs[songClock]))
+                pygame.display.update()
                 songClock = songClock + 1
             except:
                 if songClock == 0:
-                    os.write('<h3>You have no favorite songs</h3>')
+                    f.write('<h3>You have no favorite songs</h3>')
                 break
         f.write('</body></html>')
         f.close()
         os.startfile('share.html')
         shareMenu = False
+        loadingScreen('resuming Spotify Layer')
 
     if lyricsMenu == True:
+        loadingScreen('Creating Lyrics Script')
         note('Generating lyric script')
         artistEmbed = artist.replace(' ', '-')
         artistEmbed = artistEmbed.replace("'", '-')
@@ -419,6 +475,7 @@ while True:
         f.close()
         os.startfile('lyrics.html')
         lyricsMenu = False
+        loadingScreen('resuming Spotify Layer')
 
     if gvDebug == True:
         if gv == True:
@@ -437,4 +494,20 @@ while True:
         except:
             pass
 
+    if frames == 0:
+        loadingScreen('Resetting background')
+        #screen=pygame.display.set_mode(event.dict['size'], mode)
+        sx, sy = screen.get_size()
+        x1 = 0
+        x2 = sx - sx - sx
+        try:
+            screen.fill(backColor)
+        except:
+            os.chdir('theme files')
+            os.chdir(themeFolder)
+            backImg = pygame.image.load(backColor)
+            os.chdir('..')
+            os.chdir('..')
+        loadingScreen('resuming Spotify Layer')
+    frames = frames + 1
     display.update()
