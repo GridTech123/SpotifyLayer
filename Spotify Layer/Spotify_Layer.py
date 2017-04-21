@@ -1,3 +1,12 @@
+import pygame
+from pygame import *
+from pygame.locals import *
+mode = RESIZABLE
+screen = pygame.display.set_mode([1920,1080], mode)
+screen.fill((0,0,0))
+screen.blit(pygame.image.load('logo.png'), (960, 540))
+pygame.display.update()
+
 import spotilib
 from shutil import copyfile
 
