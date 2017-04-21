@@ -1,3 +1,3 @@
-S'blue.txt'
+S'GridTechPlays.txt'
 p0
 .

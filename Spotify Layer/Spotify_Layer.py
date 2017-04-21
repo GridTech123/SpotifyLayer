@@ -74,14 +74,21 @@ theme = open(themes[themeNum],'r+')
 themeLines = theme.read().splitlines()
 themeFolder = themeLines[0]
 backColor = themeLines[1]
-backColor = eval(backColor)
+os.chdir('..')
+try:
+    backColor = eval(backColor)
+except:
+    os.chdir('theme files')
+    os.chdir(themeFolder)
+    backImg = pygame.image.load(backColor)
+    os.chdir('..')
+    os.chdir('..')
 sideColor = themeLines[2]
 sideColor = eval(sideColor)
 noteColor = themeLines[3]
 noteColor = eval(noteColor)
 textColor = themeLines[4]
 textColor = eval(textColor)
-os.chdir('..')
 os.chdir('theme files')
 os.chdir(themeFolder)
 logo = pygame.image.load('logo.png')
@@ -184,9 +191,22 @@ while True:
             sx, sy = screen.get_size()
             x1 = 0
             x2 = sx - sx - sx
+            try:
+                screen.fill(backColor)
+            except:
+                os.chdir('theme files')
+                os.chdir(themeFolder)
+                backImg = pygame.image.load(backColor)
+                os.chdir('..')
+                os.chdir('..')
 
     #settings
-    screen.fill(backColor)
+    try:
+        screen.fill(backColor)
+    except:
+        screen.fill(white)
+        backImg = transform.scale(backImg, (sx, sy))
+        screen.blit(backImg, (0,0))
     clock.tick(200)
     mx, my = pygame.mouse.get_pos()
 
@@ -293,6 +313,8 @@ while True:
             if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 rendermode = 0
                 pygame.time.wait(100)
+
+        screen.blit(menu_font.render('Grid Vertex:', True, black), (100, 10))
         
         if gvDebug == False:
             pygame.draw.rect(screen, sideColor, [100, 100, 300, 50])    
@@ -317,9 +339,23 @@ while True:
         while True:
             try:
                 if themes[themePickerClock] != '':
-                    pygame.draw.rect(screen, sideColor, [themePickerX, themePickerY, 300, 50])
+                    pygame.draw.rect(screen, sideColor, [themePickerX, themePickerY, 370, 262])
                     screen.blit(hud_font.render(themes[themePickerClock], True, textColor), (themePickerX, themePickerY)) 
-                    if mx > themePickerX and mx < themePickerX + 300 and my > themePickerY and my < themePickerY + 50:
+                    os.chdir('themes')
+                    themesTemp = os.listdir(os.getcwd())
+                    themesTemp.remove('temp.txt')
+                    themeTemp = open(themes[themePickerClock], 'r+')
+                    themeLinesTemp = themeTemp.read().splitlines()
+                    os.chdir('..')
+                    os.chdir('theme files')
+                    os.chdir(themeLinesTemp[0])
+                    tempImg = pygame.image.load('temp.jpg')
+                    tempImg = transform.scale(tempImg, (320, 180))
+                    screen.blit(tempImg, (themePickerX + 25, themePickerY + 50))
+                    screen.blit(hud_font2.render('By: ' +str(themeLinesTemp[5]), True, textColor), (themePickerX, themePickerY + 240)) 
+                    os.chdir('..')
+                    os.chdir('..')
+                    if mx > themePickerX and mx < themePickerX + 370 and my > themePickerY and my < themePickerY + 252:
                         if event.type == MOUSEBUTTONDOWN and event.button == 1:     
                             pickle_out = open('theme.sl', 'w')
                             pickle.dump(themes[themePickerClock], pickle_out)
@@ -332,8 +368,8 @@ while True:
                     themePickerX = themePickerX + 400
                     themePickerClock = themePickerClock + 1
                     if themePickerX + 400 > sx:
-                        themePickerX = 0
-                        themePickerY = themePickerY + 100
+                        themePickerX = 100
+                        themePickerY = themePickerY + 275
                 else:
                     break
             except:

@@ -3,3 +3,4 @@ background color
 side panel color
 notification color
 text color
+author

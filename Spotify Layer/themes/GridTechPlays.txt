@@ -1,0 +1,6 @@
+gridtechplays
+banner3.png
+(50, 50, 50)
+(158, 156, 166)
+(255, 255, 255)
+GridTech
