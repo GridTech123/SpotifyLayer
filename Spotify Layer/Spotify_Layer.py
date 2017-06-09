@@ -226,8 +226,8 @@ except:
     pickle_out.close()
 
 def note(text):
-    pygame.draw.rect(screen, gray, [sx - 400, sy - 300, 400, 200])
-    screen.blit(hud_font.render(text, True, noteColor), (sx - 400, sy - 300))
+    pygame.draw.rect(screen, noteColor, [sx - 400, sy - 300, 400, 200])
+    screen.blit(hud_font.render(text, True, textColor), (sx - 400, sy - 300))
     display.update()
 
 x1 = 0
@@ -311,8 +311,8 @@ while True:
         #share
         screen.blit(share, (0,60))
         if mx > 0 and mx < 100 and my > 60 and my < 110:
-           pygame.draw.rect(screen, sideColor, [50, 60 , 200, 50]) 
-           screen.blit(hud_font.render('share', True, textColor), (50, 60))
+           pygame.draw.rect(screen, sideColor, [50, 60 , 600, 50]) 
+           screen.blit(hud_font.render('View Favorite And Banned Songs', True, textColor), (50, 60))
            if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 shareMenu = True
                 pygame.time.wait(100)
@@ -374,19 +374,25 @@ while True:
         screen.blit(menu_font.render('Grid Vertex:', True, black), (100, 10))
         
         if gvDebug == False:
-            pygame.draw.rect(screen, sideColor, [100, 100, 300, 50])    
-            screen.blit(hud_font.render('turn on gv debug', True, textColor), (100, 100))
             if mx > 100 and mx < 400 and my > 100 and my < 150:
+                pygame.draw.rect(screen, noteColor, [100, 100, 300, 50])    
+                screen.blit(hud_font.render('turn on gv debug', True, textColor), (100, 100))
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:      
                     gvDebug = True
                     pygame.time.delay(100)
+            else:
+                pygame.draw.rect(screen, sideColor, [100, 100, 300, 50])    
+                screen.blit(hud_font.render('turn on gv debug', True, textColor), (100, 100))
         elif gvDebug == True:
-            pygame.draw.rect(screen, sideColor, [100, 100, 300, 50])
-            screen.blit(hud_font.render('turn off gv debug', True, textColor), (100, 100))
             if mx > 100 and mx < 400 and my > 100 and my < 150:
+                pygame.draw.rect(screen, noteColor, [100, 100, 300, 50])
+                screen.blit(hud_font.render('turn off gv debug', True, textColor), (100, 100))
                 if event.type == MOUSEBUTTONDOWN and event.button == 1:      
                     gvDebug = False
                     pygame.time.delay(100)
+            else:
+                pygame.draw.rect(screen, sideColor, [100, 100, 300, 50])
+                screen.blit(hud_font.render('turn off gv debug', True, textColor), (100, 100))
 
         screen.blit(menu_font.render('Themes:', True, black), (100, 200))
 
@@ -398,23 +404,23 @@ while True:
         while True:
             try:
                 if themes[themePickerClock] != '':
-                    pygame.draw.rect(screen, sideColor, [themePickerX, themePickerY, 370, 262])
-                    screen.blit(hud_font.render(themes[themePickerClock], True, textColor), (themePickerX, themePickerY)) 
-                    os.chdir('themes')
-                    themesTemp = os.listdir(os.getcwd())
-                    themesTemp.remove('temp.txt')
-                    themeTemp = open(themes[themePickerClock], 'r+')
-                    themeLinesTemp = themeTemp.read().splitlines()
-                    os.chdir('..')
-                    os.chdir('theme files')
-                    os.chdir(themeLinesTemp[0])
-                    tempImg = pygame.image.load('temp.jpg')
-                    tempImg = transform.scale(tempImg, (320, 180))
-                    screen.blit(tempImg, (themePickerX + 25, themePickerY + 50))
-                    screen.blit(hud_font2.render('By: ' +str(themeLinesTemp[5]), True, textColor), (themePickerX, themePickerY + 240)) 
-                    os.chdir('..')
-                    os.chdir('..')
                     if mx > themePickerX and mx < themePickerX + 370 and my > themePickerY and my < themePickerY + 252:
+                        pygame.draw.rect(screen, noteColor, [themePickerX, themePickerY, 370, 262])
+                        screen.blit(hud_font.render(themes[themePickerClock], True, textColor), (themePickerX, themePickerY)) 
+                        os.chdir('themes')
+                        themesTemp = os.listdir(os.getcwd())
+                        themesTemp.remove('temp.txt')
+                        themeTemp = open(themes[themePickerClock], 'r+')
+                        themeLinesTemp = themeTemp.read().splitlines()
+                        os.chdir('..')
+                        os.chdir('theme files')
+                        os.chdir(themeLinesTemp[0])
+                        tempImg = pygame.image.load('temp.jpg')
+                        tempImg = transform.scale(tempImg, (320, 180))
+                        screen.blit(tempImg, (themePickerX + 25, themePickerY + 50))
+                        screen.blit(hud_font2.render('By: ' +str(themeLinesTemp[5]), True, textColor), (themePickerX, themePickerY + 240)) 
+                        os.chdir('..')
+                        os.chdir('..')
                         if event.type == MOUSEBUTTONDOWN and event.button == 1:     
                             pickle_out = open('theme.sl', 'w')
                             pickle.dump(themes[themePickerClock], pickle_out)
@@ -424,6 +430,23 @@ while True:
                             except:
                                 os.startfile('Spotify_Layer.py')
                             quit = True
+                    else:
+                        pygame.draw.rect(screen, sideColor, [themePickerX, themePickerY, 370, 262])
+                        screen.blit(hud_font.render(themes[themePickerClock], True, textColor), (themePickerX, themePickerY)) 
+                        os.chdir('themes')
+                        themesTemp = os.listdir(os.getcwd())
+                        themesTemp.remove('temp.txt')
+                        themeTemp = open(themes[themePickerClock], 'r+')
+                        themeLinesTemp = themeTemp.read().splitlines()
+                        os.chdir('..')
+                        os.chdir('theme files')
+                        os.chdir(themeLinesTemp[0])
+                        tempImg = pygame.image.load('temp.jpg')
+                        tempImg = transform.scale(tempImg, (320, 180))
+                        screen.blit(tempImg, (themePickerX + 25, themePickerY + 50))
+                        screen.blit(hud_font2.render('By: ' +str(themeLinesTemp[5]), True, textColor), (themePickerX, themePickerY + 240)) 
+                        os.chdir('..')
+                        os.chdir('..')
                     themePickerX = themePickerX + 400
                     themePickerClock = themePickerClock + 1
                     if themePickerX + 400 > sx:
@@ -441,23 +464,62 @@ while True:
         sys.exit()
 
     if shareMenu == True:
-        f = open('share.html', 'w')
-        f.write('<html><head></head><body>')
-        f.write('<h1>Favorite Songs</h1>')
+        loadingScreen('Creating view Script - Preparing HTML')
+        f = open('view.html', 'w')
+        f.write('<script type="text/javascript" language="JavaScript">function HideContent(d) {document.getElementById(d).style.display = "none";}function ShowContent(d) {document.getElementById(d).style.display = "block";} function favButton() {HideContent("ban"); ShowContent("fav");} function banButton() {HideContent("fav"); ShowContent("ban");}</script>')
+        f.write('''<html> <head><title>Favorite And Banned Songs</title></head> <style>#title{font-size: 30px; font-family: Arial; font-weight: bold; color: white; margin-left: 20px;} #text{font-size: 15px; font-family: Arial; color: white; margin: 20px;} #navbar{width: 100%; height: 80px; background-color: #333333;} #body{background-color: black; margin: 0px;} 
+.button{background-color: #333333;
+border: none;
+color: white;
+padding: 15px 32px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 16px;
+margin: 4px 2px;
+cursor: pointer;
+-webkit-transition-duration: 0.4s; /* Safari */
+transition-duration: 0.4s;
+font-family: Arial;
+}
+.button2:hover {
+color: grey;
+}
+</style><body id=body onload="javascript: HideContent('ban')">''')
+        f.write('<div id=navbar><h1 id=title>Favorite And Banned Songs</h1><h1 id=text>Favorite Songs: '+str(len(favSongs))+' | Banned Songs: ' +str(len(banSongs))+'</h1></div>')
+        f.write('<div><a href="'+"javascript:favButton()"+'"'+"class='button button2'>Favorite Songs</a>")
+        f.write('<a href="'+"javascript:banButton()"+'"'+"class='button button2'>Banned Songs</a></div>")
         songClock = 0
+        f.write('<div id=fav>')
         while True:
             try:
-                f.write('<h4>'+str(favSongs[songClock])+('</h4> \n'))
-                loadingScreen('Creating Share Script - Added: ' +str(favSongs[songClock]))
+                f.write('<h4 id=text>'+str(songClock + 1)+'. '+str(favSongs[songClock])+('</h4> \n'))
+                loadingScreen('Creating view Script - Favorite Songs Added: ' +str(favSongs[songClock]))
                 pygame.display.update()
                 songClock = songClock + 1
             except:
                 if songClock == 0:
-                    f.write('<h3>You have no favorite songs</h3>')
+                    f.write('<h3 id=text>You have no favorite songs</h3>')
                 break
+        f.write('</div>')
+        songClock = 0
+        f.write('<div id=ban>')
+        while True:
+            try:
+                f.write('<h4 id=text>'+str(songClock + 1)+'. '+str(banSongs[songClock])+('</h4> \n'))
+                loadingScreen('Creating view Script - Banned Songs Added: ' +str(banSongs[songClock]))
+                pygame.display.update()
+                songClock = songClock + 1
+            except:
+                if songClock == 0:
+                    f.write('<h3 id=text>You have no banned songs</h3>')
+                break
+        f.write('</div>')
+        loadingScreen('Creating view Script - finishing html')
         f.write('</body></html>')
         f.close()
-        os.startfile('share.html')
+        loadingScreen('Creating view Script - starting html')
+        os.startfile('view.html')
         shareMenu = False
         loadingScreen('resuming Spotify Layer')
 
@@ -469,7 +531,7 @@ while True:
         songEmbed = song.replace(' ', '-')
         songEmbed = songEmbed.replace("'", '-')
         f = open('lyrics.html', 'w')
-        f.write('<html><head></head><body>')
+        f.write('<html> <head><title>Lyrics</title></head> <style>#title{font-size: 15px; font-family: Airial;}</style> <body>')
         f.write('<div><iframe src="http://www.musixmatch.com/lyrics/'+str(artistEmbed)+str('/')+str(songEmbed)+str('/embed?theme=dark" style="border:none;background:transparent;" width="100%" height="100%" border=0></iframe></div>'))
         f.write('</body></html>')
         f.close()
